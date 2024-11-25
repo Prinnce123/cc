@@ -32,14 +32,13 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Text Summarizer</h1>
-        <form action="/summarize" method="POST" enctype="multipart/form-data">
-            <textarea name="text" placeholder="Enter text to summarize..."></textarea><br>
+        <form id="summarizeForm">
+            <textarea id="textInput" name="text" placeholder="Enter text to summarize..."></textarea><br>
             <p>OR</p>
-            <input type="file" name="file" accept=".pdf"><br>
-            <button type="submit">Summarize</button>
+            <input id="fileInput" type="file" name="file" accept=".pdf"><br>
+            <button type="button" onclick="submitForm()">Summarize</button>
         </form>
         <div id="result">
             <h3>Summary:</h3>
@@ -47,5 +46,26 @@
         </div>
     </div>
 
+    <script>
+        function submitForm() {
+            const formData = new FormData(document.getElementById('summarizeForm'));
+
+            fetch('/summarize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('summaryText').innerText = data.error;
+                } else {
+                    document.getElementById('summaryText').innerText = data.summary;
+                }
+            })
+            .catch(err => {
+                document.getElementById('summaryText').innerText = "An error occurred: " + err.message;
+            });
+        }
+    </script>
 </body>
 </html>
