@@ -1,0 +1,4 @@
+Flask
+transformers
+PyPDF2
+gunicorn
